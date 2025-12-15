@@ -1,0 +1,432 @@
+import 'product.dart';
+
+class SampleData {
+  static final List<Product> cats = [
+    Product(
+      id: 'cat1',
+      name: 'Британский котёнок голубой',
+      description: 'Очаровательный котёнок британской породы с шикарной плюшевой шерстью. Приучен к лотку и когтеточке. Родители - чемпионы выставок. Документы РКФ.',
+      price: 3500000,
+      oldPrice: 4000000,
+      imageUrl: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600',
+      categoryId: 'cats',
+      categoryName: 'Кошки',
+      breed: 'Британская',
+      age: '3 месяца',
+      gender: 'male',
+      color: 'Голубой',
+      isVaccinated: true,
+      isNegotiable: false,
+      city: 'Ташкент',
+      isTop: true,
+      sellerName: 'Анна',
+      sellerPhone: '+998 90 123 45 67',
+      sellerTelegram: '@anna_cats',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+    ),
+    Product(
+      id: 'cat2',
+      name: 'Персидский котёнок белый',
+      description: 'Пушистый персидский котёнок белоснежного окраса. Ласковый, игривый характер. Кушает сухой корм премиум класса.',
+      price: 2800000,
+      imageUrl: 'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=600',
+      categoryId: 'cats',
+      categoryName: 'Кошки',
+      breed: 'Персидская',
+      age: '2 месяца',
+      gender: 'female',
+      color: 'Белый',
+      isVaccinated: true,
+      city: 'Ташкент',
+      sellerName: 'Мария',
+      sellerPhone: '+998 91 234 56 78',
+      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+    ),
+    Product(
+      id: 'cat3',
+      name: 'Шотландский вислоухий котёнок',
+      description: 'Милый вислоухий котёнок с идеальными ушками. Здоров, активен. Приучен к туалету. Отдаём с любимой игрушкой.',
+      price: 4200000,
+      imageUrl: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600',
+      categoryId: 'cats',
+      categoryName: 'Кошки',
+      breed: 'Шотландская вислоухая',
+      age: '4 месяца',
+      gender: 'male',
+      color: 'Серый мраморный',
+      isVaccinated: true,
+      isTop: true,
+      city: 'Самарканд',
+      sellerName: 'Дмитрий',
+      sellerPhone: '+998 93 345 67 89',
+      sellerTelegram: '@dmitry_pets',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    Product(
+      id: 'cat4',
+      name: 'Мейн-кун рыжий котёнок',
+      description: 'Крупный котёнок породы Мейн-кун. Будущий великан! Родители весят 8 и 12 кг. Полный пакет документов.',
+      price: 5500000,
+      imageUrl: 'https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?w=600',
+      categoryId: 'cats',
+      categoryName: 'Кошки',
+      breed: 'Мейн-кун',
+      age: '3 месяца',
+      gender: 'male',
+      color: 'Рыжий табби',
+      isVaccinated: true,
+      city: 'Ташкент',
+      sellerName: 'Елена',
+      sellerPhone: '+998 94 456 78 90',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    Product(
+      id: 'cat5',
+      name: 'Сфинкс канадский',
+      description: 'Уникальный бесшёрстный котёнок. Очень ласковый и общительный. Любит сидеть на руках.',
+      price: 0,
+      imageUrl: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=600',
+      categoryId: 'cats',
+      categoryName: 'Кошки',
+      breed: 'Канадский сфинкс',
+      age: '5 месяцев',
+      gender: 'female',
+      color: 'Розовый',
+      isVaccinated: true,
+      isNegotiable: true,
+      city: 'Бухара',
+      sellerName: 'Камила',
+      sellerPhone: '+998 95 567 89 01',
+      createdAt: DateTime.now().subtract(const Duration(hours: 8)),
+    ),
+  ];
+
+  static final List<Product> dogs = [
+    Product(
+      id: 'dog1',
+      name: 'Хаски голубоглазый щенок',
+      description: 'Красивый щенок сибирской хаски с яркими голубыми глазами. Активный, дружелюбный. Идеален для семьи с детьми.',
+      price: 4500000,
+      oldPrice: 5000000,
+      imageUrl: 'https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=600',
+      categoryId: 'dogs',
+      categoryName: 'Собаки',
+      breed: 'Сибирская хаски',
+      age: '2 месяца',
+      gender: 'male',
+      color: 'Чёрно-белый',
+      isVaccinated: true,
+      isTop: true,
+      city: 'Ташкент',
+      sellerName: 'Алексей',
+      sellerPhone: '+998 90 111 22 33',
+      sellerTelegram: '@husky_tashkent',
+      createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+    ),
+    Product(
+      id: 'dog2',
+      name: 'Лабрадор палевый щенок',
+      description: 'Добрый и умный щенок лабрадора. Отлично поддаётся дрессировке. Будет верным другом.',
+      price: 3800000,
+      imageUrl: 'https://images.unsplash.com/photo-1579213838058-5e6f776da3d4?w=600',
+      categoryId: 'dogs',
+      categoryName: 'Собаки',
+      breed: 'Лабрадор ретривер',
+      age: '3 месяца',
+      gender: 'female',
+      color: 'Палевый',
+      isVaccinated: true,
+      city: 'Ташкент',
+      sellerName: 'Сергей',
+      sellerPhone: '+998 91 222 33 44',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    Product(
+      id: 'dog3',
+      name: 'Немецкая овчарка щенок',
+      description: 'Умный щенок немецкой овчарки от рабочих родителей. Отличные охранные качества. Документы РКФ.',
+      price: 5200000,
+      imageUrl: 'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600',
+      categoryId: 'dogs',
+      categoryName: 'Собаки',
+      breed: 'Немецкая овчарка',
+      age: '4 месяца',
+      gender: 'male',
+      color: 'Чепрачный',
+      isVaccinated: true,
+      city: 'Фергана',
+      sellerName: 'Павел',
+      sellerPhone: '+998 93 333 44 55',
+      createdAt: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    Product(
+      id: 'dog4',
+      name: 'Корги пемброк щенок',
+      description: 'Весёлый щенок корги - порода королевы! Короткие лапки и большие уши. Очень умный и активный.',
+      price: 6000000,
+      imageUrl: 'https://images.unsplash.com/photo-1612536057832-2ff7ead58194?w=600',
+      categoryId: 'dogs',
+      categoryName: 'Собаки',
+      breed: 'Вельш-корги пемброк',
+      age: '2 месяца',
+      gender: 'female',
+      color: 'Рыже-белый',
+      isVaccinated: true,
+      isTop: true,
+      city: 'Ташкент',
+      sellerName: 'Ольга',
+      sellerPhone: '+998 94 444 55 66',
+      sellerTelegram: '@corgi_uz',
+      createdAt: DateTime.now().subtract(const Duration(hours: 6)),
+    ),
+    Product(
+      id: 'dog5',
+      name: 'Алабай среднеазиатская овчарка',
+      description: 'Настоящий алабай от породистых родителей. Будущий охранник! Крупный и сильный.',
+      price: 0,
+      imageUrl: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600',
+      categoryId: 'dogs',
+      categoryName: 'Собаки',
+      breed: 'Среднеазиатская овчарка',
+      age: '3 месяца',
+      gender: 'male',
+      color: 'Белый с пятнами',
+      isVaccinated: false,
+      isNegotiable: true,
+      city: 'Навои',
+      sellerName: 'Рустам',
+      sellerPhone: '+998 95 555 66 77',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    Product(
+      id: 'dog6',
+      name: 'Французский бульдог',
+      description: 'Милый французский бульдог. Компактный, подходит для квартиры. Дружелюбный характер.',
+      price: 4800000,
+      imageUrl: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600',
+      categoryId: 'dogs',
+      categoryName: 'Собаки',
+      breed: 'Французский бульдог',
+      age: '4 месяца',
+      gender: 'male',
+      color: 'Палевый',
+      isVaccinated: true,
+      city: 'Ташкент',
+      sellerName: 'Диана',
+      sellerPhone: '+998 90 666 77 88',
+      createdAt: DateTime.now().subtract(const Duration(hours: 12)),
+    ),
+  ];
+
+  static final List<Product> birds = [
+    Product(
+      id: 'bird1',
+      name: 'Волнистый попугай зелёный',
+      description: 'Яркий волнистый попугайчик. Молодой, можно научить говорить. Здоров и активен.',
+      price: 150000,
+      imageUrl: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600',
+      categoryId: 'birds',
+      categoryName: 'Птицы',
+      breed: 'Волнистый попугай',
+      age: '6 месяцев',
+      gender: 'male',
+      color: 'Зелёный',
+      city: 'Ташкент',
+      sellerName: 'Иван',
+      sellerPhone: '+998 91 777 88 99',
+      createdAt: DateTime.now().subtract(const Duration(days: 4)),
+    ),
+    Product(
+      id: 'bird2',
+      name: 'Корелла серая ручная',
+      description: 'Ручная корелла, садится на плечо. Умеет насвистывать мелодии. С клеткой.',
+      price: 350000,
+      imageUrl: 'https://images.unsplash.com/photo-1544923408-75c5cef46f14?w=600',
+      categoryId: 'birds',
+      categoryName: 'Птицы',
+      breed: 'Корелла',
+      age: '1 год',
+      gender: 'female',
+      color: 'Серый',
+      isTop: true,
+      city: 'Ташкент',
+      sellerName: 'Наталья',
+      sellerPhone: '+998 93 888 99 00',
+      sellerTelegram: '@birds_uz',
+      createdAt: DateTime.now().subtract(const Duration(hours: 10)),
+    ),
+    Product(
+      id: 'bird3',
+      name: 'Канарейка жёлтая певчая',
+      description: 'Канарейка с красивым голосом. Поёт каждое утро! Отличный питомец.',
+      price: 200000,
+      imageUrl: 'https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=600',
+      categoryId: 'birds',
+      categoryName: 'Птицы',
+      breed: 'Канарейка',
+      age: '8 месяцев',
+      gender: 'male',
+      color: 'Жёлтый',
+      city: 'Самарканд',
+      sellerName: 'Азиз',
+      sellerPhone: '+998 94 999 00 11',
+      createdAt: DateTime.now().subtract(const Duration(days: 5)),
+    ),
+  ];
+
+  static final List<Product> horses = [
+    Product(
+      id: 'horse1',
+      name: 'Ахалтекинский жеребец золотой',
+      description: 'Красивейший ахалтекинец золотисто-буланой масти. Чистокровный, с родословной. Обучен верховой езде.',
+      price: 150000000,
+      imageUrl: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600',
+      categoryId: 'horses',
+      categoryName: 'Лошади',
+      breed: 'Ахалтекинская',
+      age: '3 года',
+      gender: 'male',
+      color: 'Золотисто-буланый',
+      isVaccinated: true,
+      isTop: true,
+      city: 'Ташкент',
+      sellerName: 'Ферма Sunrise',
+      sellerPhone: '+998 90 100 20 30',
+      sellerTelegram: '@sunrise_farm',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    Product(
+      id: 'horse2',
+      name: 'Пони шетлендский для детей',
+      description: 'Добрый пони для катания детей. Спокойный характер. Идеален для обучения верховой езде.',
+      price: 25000000,
+      imageUrl: 'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?w=600',
+      categoryId: 'horses',
+      categoryName: 'Лошади',
+      breed: 'Шетлендский пони',
+      age: '4 года',
+      gender: 'female',
+      color: 'Пегий',
+      isVaccinated: true,
+      city: 'Бухара',
+      sellerName: 'Конюшня Бухара',
+      sellerPhone: '+998 91 200 30 40',
+      createdAt: DateTime.now().subtract(const Duration(days: 7)),
+    ),
+  ];
+
+  static final List<Product> food = [
+    Product(
+      id: 'food1',
+      name: 'Royal Canin для кошек 2кг',
+      description: 'Премиум корм для взрослых кошек. Полнорационный, сбалансированный состав.',
+      price: 280000,
+      oldPrice: 320000,
+      imageUrl: 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=600',
+      categoryId: 'food',
+      categoryName: 'Корма',
+      city: 'Ташкент',
+      sellerName: 'ZooShop',
+      sellerPhone: '+998 71 123 45 67',
+      createdAt: DateTime.now().subtract(const Duration(hours: 4)),
+    ),
+    Product(
+      id: 'food2',
+      name: 'Pedigree для собак 3кг',
+      description: 'Корм для взрослых собак всех пород. Мясо и овощи.',
+      price: 180000,
+      imageUrl: 'https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=600',
+      categoryId: 'food',
+      categoryName: 'Корма',
+      city: 'Ташкент',
+      sellerName: 'PetStore',
+      sellerPhone: '+998 71 234 56 78',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+  ];
+
+  static final List<Product> toys = [
+    Product(
+      id: 'toy1',
+      name: 'Игрушка-дразнилка для кошки',
+      description: 'Игрушка с перьями на палочке. Кошки обожают!',
+      price: 35000,
+      imageUrl: 'https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=600',
+      categoryId: 'toys',
+      categoryName: 'Игрушки',
+      city: 'Ташкент',
+      sellerName: 'ZooShop',
+      sellerPhone: '+998 71 123 45 67',
+      createdAt: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    Product(
+      id: 'toy2',
+      name: 'Мячик резиновый для собак',
+      description: 'Прочный резиновый мяч для игр и дрессировки.',
+      price: 25000,
+      imageUrl: 'https://images.unsplash.com/photo-1535294435445-d7249524ef2e?w=600',
+      categoryId: 'toys',
+      categoryName: 'Игрушки',
+      city: 'Ташкент',
+      sellerName: 'PetStore',
+      sellerPhone: '+998 71 234 56 78',
+      createdAt: DateTime.now().subtract(const Duration(days: 5)),
+    ),
+  ];
+
+  static final List<Product> cages = [
+    Product(
+      id: 'cage1',
+      name: 'Домик-когтеточка для кошки',
+      description: 'Уютный домик с лежанкой и когтеточкой. Высота 120 см.',
+      price: 350000,
+      imageUrl: 'https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=600',
+      categoryId: 'cages',
+      categoryName: 'Домики',
+      city: 'Ташкент',
+      sellerName: 'PetFurniture',
+      sellerPhone: '+998 71 345 67 89',
+      createdAt: DateTime.now().subtract(const Duration(days: 4)),
+    ),
+  ];
+
+  static List<Product> get popular => [cats[0], dogs[0], dogs[3], cats[2], birds[1], dogs[5]];
+  static List<Product> get topAds => [...cats, ...dogs, ...birds, ...horses].where((p) => p.isTop).toList();
+  static List<Product> get allProducts => [...cats, ...dogs, ...birds, ...horses, ...food, ...toys, ...cages];
+  static List<Product> get newAds {
+    final all = [...cats, ...dogs, ...birds, ...horses];
+    all.sort((a, b) => (b.createdAt ?? DateTime.now()).compareTo(a.createdAt ?? DateTime.now()));
+    return all.take(10).toList();
+  }
+
+  static List<Product> byCategory(String id) {
+    switch (id) {
+      case 'cats':
+        return cats;
+      case 'dogs':
+        return dogs;
+      case 'birds':
+        return birds;
+      case 'horses':
+        return horses;
+      case 'food':
+        return food;
+      case 'toys':
+        return toys;
+      case 'cages':
+        return cages;
+      default:
+        return [];
+    }
+  }
+
+  static List<Product> search(String query) {
+    final q = query.toLowerCase();
+    return allProducts.where((p) {
+      return p.name.toLowerCase().contains(q) ||
+          p.description.toLowerCase().contains(q) ||
+          (p.breed?.toLowerCase().contains(q) ?? false) ||
+          p.categoryName.toLowerCase().contains(q);
+    }).toList();
+  }
+}
