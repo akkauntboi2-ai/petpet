@@ -7,6 +7,7 @@ import '../models/product.dart';
 import '../models/sample_data.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/ads_provider.dart';
+import '../providers/language_provider.dart';
 import '../theme/app_theme.dart';
 import 'category_screen.dart';
 import 'add_ad_screen.dart';
@@ -16,9 +17,70 @@ import 'search_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  void _showLanguageDialog(BuildContext context) {
+    final langProvider = Provider.of<LanguageProvider>(context, listen: false);
+    
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLarge)),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              langProvider.tr('select_language'),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...LanguageProvider.availableLanguages.map((lang) => ListTile(
+              leading: Text(lang['flag']!, style: const TextStyle(fontSize: 28)),
+              title: Text(
+                lang['name']!,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+              trailing: langProvider.currentLanguage == lang['code']
+                  ? const Icon(Icons.check_circle, color: AppTheme.primary)
+                  : null,
+              onTap: () {
+                langProvider.setLanguage(lang['code']!);
+                Navigator.pop(context);
+              },
+            )),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final adsProvider = Provider.of<AdsProvider>(context);
+    final langProvider = Provider.of<LanguageProvider>(context);
+    
 
     // Combine user ads with sample data
     final userTopAds = adsProvider.myAds.where((ad) => ad.isTop).toList();
@@ -28,7 +90,6 @@ class HomeScreen extends StatelessWidget {
     final newProducts = [...userNewAds, ...SampleData.newAds];
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => const AddAdScreen()));
@@ -36,9 +97,9 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: AppTheme.primary,
         elevation: 4,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text(
-          'Подать объявление',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        label: Text(
+          langProvider.tr('add_ad'),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
       body: SafeArea(
@@ -72,7 +133,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  const Text(
+                  Text(
                     'PetPet',
                     style: TextStyle(
                       fontSize: 22,
@@ -83,13 +144,40 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               actions: [
+                // Language button
+                GestureDetector(
+                  onTap: () => _showLanguageDialog(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    margin: const EdgeInsets.only(right: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(langProvider.flagEmoji, style: const TextStyle(fontSize: 18)),
+                        const SizedBox(width: 4),
+                        Text(
+                          langProvider.currentLanguage.toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 IconButton(
                   icon: const Icon(Icons.search, color: AppTheme.textSecondary, size: 26),
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()));
                   },
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
               ],
             ),
 
@@ -104,14 +192,8 @@ class HomeScreen extends StatelessWidget {
                   margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                    boxShadow: AppTheme.softShadow,
                   ),
                   child: Row(
                     children: [
@@ -119,7 +201,7 @@ class HomeScreen extends StatelessWidget {
                       Icon(Icons.search, color: Colors.grey.shade400, size: 24),
                       const SizedBox(width: 12),
                       Text(
-                        'Поиск животных...',
+                        langProvider.tr('search_hint'),
                         style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
                       ),
                     ],
@@ -135,13 +217,17 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Категории',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    Text(
+                      langProvider.tr('categories'),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     TextButton(
                       onPressed: () {},
-                      child: Text('Все', style: TextStyle(color: Colors.grey.shade600)),
+                      child: Text(langProvider.tr('all'), style: TextStyle(color: Colors.grey.shade600)),
                     ),
                   ],
                 ),
@@ -156,7 +242,7 @@ class HomeScreen extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   children: [
-                    ...AppCategories.animals.map((c) => _buildCategoryChip(context, c)),
+                    ...AppCategories.animals.map((c) => _buildCategoryChip(context, c, langProvider)),
                   ],
                 ),
               ),
@@ -193,9 +279,13 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      const Text(
-                        'Объявления',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      Text(
+                        langProvider.tr('popular'),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -215,12 +305,16 @@ class HomeScreen extends StatelessWidget {
             ],
 
             // New ads
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16, 24, 16, 12),
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
                 child: Text(
-                  'Новые объявления',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  langProvider.tr('new_ads'),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
@@ -246,9 +340,23 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryChip(BuildContext context, Category c) {
+  String _getCategoryName(Category c, LanguageProvider langProvider) {
+    switch (c.id) {
+      case 'cats': return langProvider.tr('cats');
+      case 'dogs': return langProvider.tr('dogs');
+      case 'birds': return langProvider.tr('birds');
+      case 'horses': return langProvider.tr('horses');
+      case 'fish': return langProvider.tr('fish');
+      case 'rodents': return langProvider.tr('rodents');
+      case 'reptiles': return langProvider.tr('reptiles');
+      default: return c.name;
+    }
+  }
+
+  Widget _buildCategoryChip(BuildContext context, Category c, LanguageProvider langProvider) {
     // Use contain for horses to show full image, cover for others
     final fitMode = c.id == 'horses' ? BoxFit.contain : BoxFit.cover;
+    
 
     return GestureDetector(
       onTap: () => Navigator.push(
@@ -265,28 +373,32 @@ class HomeScreen extends StatelessWidget {
               height: 65,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: c.color.withOpacity(0.3), width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: c.color.withOpacity(0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                boxShadow: AppTheme.softShadow,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                 child: Container(
                   color: Colors.white,
                   child: c.imagePath != null
-                      ? Image.asset(
-                          c.imagePath!,
-                          fit: fitMode,
-                          errorBuilder: (_, __, ___) => Center(
-                            child: Text(c.icon, style: const TextStyle(fontSize: 32)),
-                          ),
-                        )
+                      ? (c.id == 'horses'
+                          ? FittedBox(
+                              fit: BoxFit.contain,
+                              alignment: Alignment.centerRight,
+                              child: Image.asset(
+                                c.imagePath!,
+                                errorBuilder: (_, __, ___) => Center(
+                                  child: Text(c.icon, style: const TextStyle(fontSize: 32)),
+                                ),
+                              ),
+                            )
+                          : Image.asset(
+                              c.imagePath!,
+                              fit: fitMode,
+                              errorBuilder: (_, __, ___) => Center(
+                                child: Text(c.icon, style: const TextStyle(fontSize: 32)),
+                              ),
+                            ))
                       : Center(
                           child: Text(c.icon, style: const TextStyle(fontSize: 32)),
                         ),
@@ -295,10 +407,11 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              c.name,
-              style: const TextStyle(
+              _getCategoryName(c, langProvider),
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
+                color: Colors.black,
               ),
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -311,6 +424,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildLargeProductCard(BuildContext context, Product product) {
+    
     return Consumer<FavoritesProvider>(
       builder: (context, favorites, _) {
         final isFav = favorites.isFavorite(product.id);
@@ -326,14 +440,8 @@ class HomeScreen extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 6),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 15,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+              boxShadow: AppTheme.cardShadow,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,7 +450,7 @@ class HomeScreen extends StatelessWidget {
                 Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusMedium)),
                       child: _buildProductImage(product.imageUrl, double.infinity, 160),
                     ),
                     // TOP badge
@@ -410,10 +518,11 @@ class HomeScreen extends StatelessWidget {
                           product.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                             height: 1.2,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -433,31 +542,41 @@ class HomeScreen extends StatelessWidget {
                         Row(
                           children: [
                             if (product.isVaccinated)
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade100,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.verified, size: 12, color: Colors.green.shade700),
-                                    const SizedBox(width: 3),
-                                    Text(
-                                      'Привит',
-                                      style: TextStyle(fontSize: 10, color: Colors.green.shade700, fontWeight: FontWeight.w500),
+                              Flexible(
+                                child: Consumer<LanguageProvider>(
+                                  builder: (context, lang, _) => Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade100,
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
-                                  ],
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.verified, size: 12, color: Colors.green.shade700),
+                                        const SizedBox(width: 3),
+                                        Flexible(
+                                          child: Text(
+                                            lang.tr('vaccinated'),
+                                            style: TextStyle(fontSize: 10, color: Colors.green.shade700, fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             const Spacer(),
-                            Text(
-                              product.priceText,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: AppTheme.primary,
+                            Flexible(
+                              child: Text(
+                                product.priceText,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: AppTheme.primary,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -489,6 +608,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildProductCard(BuildContext context, Product product) {
+    
     return Consumer<FavoritesProvider>(
       builder: (context, favorites, _) {
         final isFav = favorites.isFavorite(product.id);
@@ -503,14 +623,8 @@ class HomeScreen extends StatelessWidget {
             margin: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 12,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+              boxShadow: AppTheme.cardShadow,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -521,7 +635,7 @@ class HomeScreen extends StatelessWidget {
                   child: Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusMedium)),
                         child: SizedBox(
                           width: double.infinity,
                           height: double.infinity,
@@ -589,10 +703,11 @@ class HomeScreen extends StatelessWidget {
                           product.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
                             height: 1.2,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -674,7 +789,7 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: TextStyle(fontSize: 9, color: Colors.grey.shade700),
+        style: const TextStyle(fontSize: 9, color: Colors.black87),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),

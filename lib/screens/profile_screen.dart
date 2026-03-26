@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/auth_provider.dart';
+import '../providers/language_provider.dart';
 import '../theme/app_theme.dart';
 import 'auth_screen.dart';
 import 'my_ads_screen.dart';
@@ -114,50 +115,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showLanguageDialog(BuildContext context) {
+    final langProvider = Provider.of<LanguageProvider>(context, listen: false);
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Выберите язык',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Text('🇷🇺', style: TextStyle(fontSize: 24)),
-              title: const Text('Русский'),
-              trailing: const Icon(Icons.check, color: AppTheme.primary),
-              onTap: () => Navigator.pop(ctx),
-            ),
-            ListTile(
-              leading: const Text('🇺🇿', style: TextStyle(fontSize: 24)),
-              title: const Text("O'zbekcha"),
-              onTap: () {
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Скоро будет доступно')),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
-              title: const Text('English'),
-              onTap: () {
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Coming soon')),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-          ],
+      builder: (ctx) => Consumer<LanguageProvider>(
+        builder: (context, lang, _) => Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                lang.tr('select_language'),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              ...LanguageProvider.availableLanguages.map((langItem) => ListTile(
+                leading: Text(langItem['flag']!, style: const TextStyle(fontSize: 24)),
+                title: Text(langItem['name']!),
+                trailing: lang.currentLanguage == langItem['code']
+                    ? const Icon(Icons.check, color: AppTheme.primary)
+                    : null,
+                onTap: () {
+                  langProvider.setLanguage(langItem['code']!);
+                  Navigator.pop(ctx);
+                },
+              )),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
@@ -282,10 +272,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Профиль', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(lang.tr('profile'), style: const TextStyle(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
       ),
@@ -299,7 +291,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                  boxShadow: AppTheme.softShadow,
                 ),
                 child: auth.isLoggedIn
                     ? Column(
@@ -410,9 +403,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Colors.grey.shade400,
                           ),
                           const SizedBox(height: 16),
-                          const Text(
-                            'Войдите чтобы размещать объявления',
-                            style: TextStyle(fontSize: 15),
+                          Text(
+                            lang.tr('login_prompt'),
+                            style: const TextStyle(fontSize: 15),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 20),
@@ -426,9 +419,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                               ),
                               icon: const Icon(Icons.send),
-                              label: const Text(
-                                'Войти через Telegram',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              label: Text(
+                                lang.tr('login_telegram'),
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -440,7 +433,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 24),
                 _buildMenuItem(
                   icon: Icons.article_outlined,
-                  title: 'Мои объявления',
+                  title: lang.tr('my_ads'),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -450,7 +443,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 _buildMenuItem(
                   icon: Icons.favorite_outline,
-                  title: 'Избранное',
+                  title: lang.tr('favorites'),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -463,25 +456,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 24),
               _buildMenuItem(
                 icon: Icons.language_outlined,
-                title: 'Язык',
-                subtitle: 'Русский',
+                title: lang.tr('language'),
+                subtitle: lang.languageName,
                 onTap: () => _showLanguageDialog(context),
               ),
               _buildMenuItem(
                 icon: Icons.notifications_outlined,
-                title: 'Уведомления',
+                title: lang.tr('notifications'),
                 onTap: () => _showNotificationsDialog(context),
               ),
 
               const SizedBox(height: 24),
               _buildMenuItem(
                 icon: Icons.info_outline,
-                title: 'О приложении',
+                title: lang.tr('about'),
                 onTap: () => _showAboutDialog(context),
               ),
               _buildMenuItem(
                 icon: Icons.help_outline,
-                title: 'Помощь',
+                title: lang.tr('help'),
                 onTap: () {
                   launchUrl(Uri.parse('https://t.me/petpetuz_bot'));
                 },
@@ -511,12 +504,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
       ),
       child: ListTile(
         leading: Icon(icon, color: AppTheme.primary),
         title: Text(title),
-        subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: Colors.grey.shade600)) : null,
+        subtitle: subtitle != null
+            ? Text(subtitle, style: TextStyle(color: Colors.grey.shade600))
+            : null,
         trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400),
         onTap: onTap,
       ),

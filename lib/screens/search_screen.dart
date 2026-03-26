@@ -119,7 +119,10 @@ class _SearchScreenState extends State<SearchScreen> {
             runSpacing: 8,
             children: suggestions.map((s) {
               return ActionChip(
-                label: Text(s),
+                label: Text(
+                  s,
+                  style: const TextStyle(color: Colors.black87),
+                ),
                 backgroundColor: Colors.grey.shade100,
                 onPressed: () {
                   _searchController.text = s;

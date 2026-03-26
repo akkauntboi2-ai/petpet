@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/favorites_provider.dart';
+import '../providers/language_provider.dart';
 import '../theme/app_theme.dart';
 import 'product_detail_screen.dart';
 
@@ -10,12 +11,14 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text(
-          'Избранное',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        title: Text(
+          lang.tr('favorites'),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
@@ -41,16 +44,16 @@ class FavoritesScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Пока пусто',
-                    style: TextStyle(
+                  Text(
+                    lang.tr('empty_yet'),
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Добавляйте понравившиеся\nобъявления в избранное',
+                    lang.tr('add_favorites_hint'),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
@@ -62,7 +65,7 @@ class FavoritesScreen extends StatelessWidget {
                   ElevatedButton.icon(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.search),
-                    label: const Text('Перейти к поиску'),
+                    label: Text(lang.tr('go_to_search')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primary,
                       foregroundColor: Colors.white,
@@ -98,7 +101,7 @@ class FavoritesScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '${favorites.count} ${_getItemsWord(favorites.count)}',
+                        '${favorites.count} ${_getItemsWord(favorites.count, lang)}',
                         style: const TextStyle(
                           color: AppTheme.primary,
                           fontWeight: FontWeight.w600,
@@ -114,23 +117,21 @@ class FavoritesScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            title: const Text('Очистить избранное?'),
-                            content: const Text(
-                              'Все объявления будут удалены из избранного',
-                            ),
+                            title: Text(lang.tr('clear_favorites')),
+                            content: Text(lang.tr('clear_favorites_hint')),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(ctx),
-                                child: const Text('Отмена'),
+                                child: Text(lang.tr('cancel')),
                               ),
                               TextButton(
                                 onPressed: () {
                                   favorites.clearAll();
                                   Navigator.pop(ctx);
                                 },
-                                child: const Text(
-                                  'Очистить',
-                                  style: TextStyle(color: Colors.red),
+                                child: Text(
+                                  lang.tr('clear'),
+                                  style: const TextStyle(color: Colors.red),
                                 ),
                               ),
                             ],
@@ -139,7 +140,7 @@ class FavoritesScreen extends StatelessWidget {
                       },
                       icon: Icon(Icons.delete_outline, color: Colors.grey.shade600, size: 20),
                       label: Text(
-                        'Очистить',
+                        lang.tr('clear'),
                         style: TextStyle(color: Colors.grey.shade600),
                       ),
                     ),
@@ -365,13 +366,16 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 
-  String _getItemsWord(int count) {
-    if (count % 10 == 1 && count % 100 != 11) {
-      return 'объявление';
-    } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)) {
-      return 'объявления';
-    } else {
-      return 'объявлений';
+  String _getItemsWord(int count, LanguageProvider lang) {
+    if (lang.currentLanguage == 'ru') {
+      if (count % 10 == 1 && count % 100 != 11) {
+        return lang.tr('items_one');
+      } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)) {
+        return lang.tr('items_few');
+      } else {
+        return lang.tr('items_many');
+      }
     }
+    return lang.tr('items_many');
   }
 }

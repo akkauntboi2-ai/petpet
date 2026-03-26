@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/ads_provider.dart';
+import '../providers/language_provider.dart';
 import '../models/product.dart';
 import '../theme/app_theme.dart';
 
@@ -45,6 +46,17 @@ class _AddAdScreenState extends State<AddAdScreen> {
     'fish': 'Рыбки',
     'reptiles': 'Рептилии',
     'other': 'Другое',
+  };
+
+  Map<String, String> _getCategories(LanguageProvider lang) => {
+    'cats': lang.tr('cats'),
+    'dogs': lang.tr('dogs'),
+    'birds': lang.tr('birds'),
+    'horses': lang.tr('horses'),
+    'rodents': lang.tr('rodents'),
+    'fish': lang.tr('fish'),
+    'reptiles': lang.tr('reptiles'),
+    'other': lang.tr('other'),
   };
 
   final List<String> _cities = [
@@ -326,6 +338,9 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context);
+    final categories = _getCategories(lang);
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: CustomScrollView(
@@ -337,9 +352,9 @@ class _AddAdScreenState extends State<AddAdScreen> {
             pinned: true,
             backgroundColor: AppTheme.primary,
             flexibleSpace: FlexibleSpaceBar(
-              title: const Text(
-                'Новое объявление',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              title: Text(
+                lang.tr('new_ad'),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               background: Container(
                 decoration: const BoxDecoration(
@@ -403,21 +418,21 @@ class _AddAdScreenState extends State<AddAdScreen> {
                           child: const Icon(Icons.card_giftcard, color: Colors.white, size: 20),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Размещение БЕСПЛАТНО',
-                                style: TextStyle(
+                                lang.tr('free_posting'),
+                                style: const TextStyle(
                                   color: AppTheme.primary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                 ),
                               ),
                               Text(
-                                'Объявление будет активно 30 дней',
-                                style: TextStyle(color: AppTheme.primary, fontSize: 12),
+                                lang.tr('ad_active_30_days'),
+                                style: const TextStyle(color: AppTheme.primary, fontSize: 12),
                               ),
                             ],
                           ),
@@ -428,8 +443,8 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
                   // Photos section
                   _buildSectionCard(
-                    title: 'Фотографии',
-                    subtitle: 'Добавьте до 8 фото. Первое фото будет главным',
+                    title: lang.tr('photos'),
+                    subtitle: lang.tr('photos_hint'),
                     icon: Icons.photo_library,
                     child: Column(
                       children: [
@@ -476,9 +491,9 @@ class _AddAdScreenState extends State<AddAdScreen> {
                                             color: AppTheme.primary,
                                             borderRadius: BorderRadius.circular(6),
                                           ),
-                                          child: const Text(
-                                            'Главное',
-                                            style: TextStyle(
+                                          child: Text(
+                                            lang.tr('main_photo'),
+                                            style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 10,
                                               fontWeight: FontWeight.bold,
@@ -560,23 +575,23 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
                   // Category & City
                   _buildSectionCard(
-                    title: 'Категория и город',
+                    title: lang.tr('category_and_city'),
                     icon: Icons.category,
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
                         _buildPremiumDropdown(
-                          label: 'Категория',
+                          label: lang.tr('category'),
                           icon: Icons.pets,
                           value: _selectedCategory,
-                          items: _categories.entries.map((e) {
+                          items: categories.entries.map((e) {
                             return DropdownMenuItem(value: e.key, child: Text(e.value));
                           }).toList(),
                           onChanged: (value) => setState(() => _selectedCategory = value!),
                         ),
                         const SizedBox(height: 16),
                         _buildPremiumDropdown(
-                          label: 'Город',
+                          label: lang.tr('city'),
                           icon: Icons.location_city,
                           value: _selectedCity,
                           items: _cities.map((city) {
@@ -590,17 +605,17 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
                   // Main info
                   _buildSectionCard(
-                    title: 'Основная информация',
+                    title: lang.tr('main_info'),
                     icon: Icons.info_outline,
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
                         _buildPremiumTextField(
                           controller: _titleController,
-                          label: 'Название объявления',
-                          hint: 'Например: Британский котёнок, мальчик',
+                          label: lang.tr('ad_title'),
+                          hint: lang.tr('ad_title_hint'),
                           icon: Icons.title,
-                          validator: (v) => v?.isEmpty == true ? 'Введите название' : null,
+                          validator: (v) => v?.isEmpty == true ? lang.tr('enter_title') : null,
                         ),
                         const SizedBox(height: 16),
                         Row(
@@ -609,14 +624,14 @@ class _AddAdScreenState extends State<AddAdScreen> {
                               flex: 2,
                               child: _buildPremiumTextField(
                                 controller: _priceController,
-                                label: 'Цена',
+                                label: lang.tr('price'),
                                 hint: _selectedCurrency == 'sum' ? '500 000' : '100',
                                 icon: Icons.payments,
                                 keyboardType: TextInputType.number,
                                 enabled: !_isNegotiable,
                                 validator: (v) {
                                   if (_isNegotiable) return null;
-                                  return v?.isEmpty == true ? 'Введите цену' : null;
+                                  return v?.isEmpty == true ? lang.tr('enter_price') : null;
                                 },
                               ),
                             ),
@@ -683,8 +698,8 @@ class _AddAdScreenState extends State<AddAdScreen> {
                         ),
                         const SizedBox(height: 12),
                         _buildPremiumSwitch(
-                          title: 'Цена договорная',
-                          subtitle: 'Цена обсуждается с покупателем',
+                          title: lang.tr('price_negotiable'),
+                          subtitle: lang.tr('price_negotiable_hint'),
                           value: _isNegotiable,
                           onChanged: (v) => setState(() => _isNegotiable = v),
                         ),
@@ -694,15 +709,15 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
                   // Pet details
                   _buildSectionCard(
-                    title: 'Характеристики питомца',
+                    title: lang.tr('pet_characteristics'),
                     icon: Icons.pets,
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
                         _buildPremiumTextField(
                           controller: _breedController,
-                          label: 'Порода',
-                          hint: 'Например: Британская короткошерстная',
+                          label: lang.tr('breed'),
+                          hint: lang.tr('ad_title_hint'),
                           icon: Icons.pets,
                         ),
                         const SizedBox(height: 16),
@@ -711,7 +726,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
                             Expanded(
                               child: _buildPremiumTextField(
                                 controller: _ageController,
-                                label: 'Возраст',
+                                label: lang.tr('age'),
                                 hint: '3 месяца',
                                 icon: Icons.cake,
                               ),
@@ -720,8 +735,8 @@ class _AddAdScreenState extends State<AddAdScreen> {
                             Expanded(
                               child: _buildPremiumTextField(
                                 controller: _colorController,
-                                label: 'Окрас',
-                                hint: 'Серый',
+                                label: lang.tr('color'),
+                                hint: '',
                                 icon: Icons.color_lens,
                               ),
                             ),
@@ -733,7 +748,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Пол',
+                              lang.tr('gender'),
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey.shade600,
@@ -745,7 +760,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
                               children: [
                                 Expanded(
                                   child: _buildGenderButton(
-                                    label: 'Мальчик',
+                                    label: lang.tr('male'),
                                     icon: Icons.male,
                                     value: 'male',
                                     color: Colors.blue,
@@ -754,7 +769,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: _buildGenderButton(
-                                    label: 'Девочка',
+                                    label: lang.tr('female'),
                                     icon: Icons.female,
                                     value: 'female',
                                     color: Colors.pink,
@@ -766,8 +781,8 @@ class _AddAdScreenState extends State<AddAdScreen> {
                         ),
                         const SizedBox(height: 16),
                         _buildPremiumSwitch(
-                          title: 'Привит',
-                          subtitle: 'Питомец имеет все необходимые прививки',
+                          title: lang.tr('vaccinated'),
+                          subtitle: lang.tr('vaccinated_hint'),
                           value: _isVaccinated,
                           onChanged: (v) => setState(() => _isVaccinated = v),
                           activeColor: Colors.green,
@@ -778,18 +793,18 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
                   // Description
                   _buildSectionCard(
-                    title: 'Описание',
+                    title: lang.tr('description'),
                     icon: Icons.description,
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
                         _buildPremiumTextField(
                           controller: _descriptionController,
-                          label: 'Описание объявления',
-                          hint: 'Опишите питомца подробнее: характер, особенности, что входит в комплект...',
+                          label: lang.tr('ad_description'),
+                          hint: lang.tr('ad_description_hint'),
                           icon: Icons.edit_note,
                           maxLines: 5,
-                          validator: (v) => v?.isEmpty == true ? 'Введите описание' : null,
+                          validator: (v) => v?.isEmpty == true ? lang.tr('enter_description') : null,
                         ),
                       ],
                     ),
@@ -797,24 +812,24 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
                   // Contact info
                   _buildSectionCard(
-                    title: 'Контактные данные',
+                    title: lang.tr('contact_info'),
                     icon: Icons.contact_phone,
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
                         _buildPremiumTextField(
                           controller: _phoneController,
-                          label: 'Номер телефона',
+                          label: lang.tr('phone_number'),
                           hint: '+998 90 123 45 67',
                           icon: Icons.phone,
                           keyboardType: TextInputType.phone,
-                          validator: (v) => v?.isEmpty == true ? 'Введите телефон' : null,
+                          validator: (v) => v?.isEmpty == true ? lang.tr('enter_phone') : null,
                         ),
                         const SizedBox(height: 16),
                         _buildPremiumTextField(
                           controller: _telegramController,
-                          label: 'Telegram (необязательно)',
-                          hint: 'username без @',
+                          label: lang.tr('telegram_optional'),
+                          hint: 'username',
                           icon: Icons.send,
                           prefix: '@',
                         ),
@@ -897,7 +912,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          'Продвижение',
+                                          lang.tr('promotion'),
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
@@ -910,7 +925,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Ваше объявление будет в топе',
+                                      lang.tr('your_ad_in_top'),
                                       style: TextStyle(
                                         color: _isTopPromotion
                                             ? Colors.white70
@@ -967,7 +982,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
                                             ),
                                           ),
                                           Text(
-                                            'дней',
+                                            lang.tr('days'),
                                             style: TextStyle(
                                               fontSize: 12,
                                               color: isSelected
@@ -1036,8 +1051,8 @@ class _AddAdScreenState extends State<AddAdScreen> {
                             const SizedBox(width: 12),
                             Text(
                               _isTopPromotion
-                                  ? 'Опубликовать (${_topPrices[_topDays]} сум)'
-                                  : 'Опубликовать бесплатно',
+                                  ? '${lang.tr('publish')} (${_topPrices[_topDays]} сум)'
+                                  : lang.tr('publish_free'),
                               style: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,

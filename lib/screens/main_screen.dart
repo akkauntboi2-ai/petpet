@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/favorites_provider.dart';
+import '../providers/language_provider.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 import 'catalog_screen.dart';
@@ -19,6 +20,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
       body: _screens[_index],
       bottomNavigationBar: Container(
@@ -43,15 +46,15 @@ class _MainScreenState extends State<MainScreen> {
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
           unselectedLabelStyle: const TextStyle(fontSize: 12),
           items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Главная',
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.home_outlined),
+              activeIcon: const Icon(Icons.home),
+              label: lang.tr('home'),
             ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.apps_outlined),
-              activeIcon: Icon(Icons.apps),
-              label: 'Каталог',
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.apps_outlined),
+              activeIcon: const Icon(Icons.apps),
+              label: lang.tr('catalog'),
             ),
             BottomNavigationBarItem(
               icon: Consumer<FavoritesProvider>(
@@ -70,12 +73,12 @@ class _MainScreenState extends State<MainScreen> {
                   child: const Icon(Icons.favorite),
                 ),
               ),
-              label: 'Избранное',
+              label: lang.tr('favorites'),
             ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Профиль',
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.person_outline),
+              activeIcon: const Icon(Icons.person),
+              label: lang.tr('profile'),
             ),
           ],
         ),

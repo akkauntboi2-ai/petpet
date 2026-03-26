@@ -23,34 +23,55 @@ class AppCategories {
       name: 'Кошки',
       icon: '🐱',
       imagePath: 'assets/categories/cat.jpg',
-      color: Colors.pink,
+      color: Colors.grey,
     ),
     Category(
       id: 'dogs',
       name: 'Собаки',
       icon: '🐕',
       imagePath: 'assets/categories/dog.png',
-      color: Colors.blue,
+      color: Colors.grey,
     ),
     Category(
       id: 'birds',
       name: 'Птицы',
       icon: '🦜',
       imagePath: 'assets/categories/bird.png',
-      color: Colors.amber,
+      color: Colors.grey,
     ),
     Category(
       id: 'horses',
       name: 'Лошади',
       icon: '🐴',
       imagePath: 'assets/categories/horse.jpg',
-      color: Colors.brown,
+      color: Colors.grey,
+    ),
+    Category(
+      id: 'fish',
+      name: 'Рыбки',
+      icon: '🐟',
+      imagePath: 'assets/categories/fish.png',
+      color: Colors.grey,
+    ),
+    Category(
+      id: 'rodents',
+      name: 'Грызуны',
+      icon: '🐹',
+      imagePath: 'assets/categories/rodent.jpg',
+      color: Colors.grey,
+    ),
+    Category(
+      id: 'reptiles',
+      name: 'Рептилии',
+      icon: '🦎',
+      imagePath: 'assets/categories/reptile.jpg',
+      color: Colors.grey,
     ),
   ];
 
   static final List<Category> accessories = [
-    Category(id: 'food', name: 'Корма', icon: '🍖', color: Colors.orange),
-    Category(id: 'cages', name: 'Клетки', icon: '🏠', color: Colors.blueGrey),
-    Category(id: 'toys', name: 'Игрушки', icon: '🎾', color: Colors.purple),
+    Category(id: 'food', name: 'Корма', icon: '🍖', color: Colors.grey),
+    Category(id: 'cages', name: 'Клетки', icon: '🏠', color: Colors.grey),
+    Category(id: 'toys', name: 'Игрушки', icon: '🎾', color: Colors.grey),
   ];
 }
