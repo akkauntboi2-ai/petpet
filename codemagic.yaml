@@ -23,10 +23,16 @@ workflows:
       - name: Install CocoaPods
         script: |
           cd ios && pod install
+      - name: Build iOS
+        script: |
+          flutter build ios --release --no-codesign
       - name: Build IPA
         script: |
-          flutter build ipa --release --export-options-plist=$HOME/export_options.plist
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $HOME/build/Runner.xcarchive CODE_SIGN_STYLE=Manual
+          xcodebuild -exportArchive -archivePath $HOME/build/Runner.xcarchive -exportOptionsPlist $HOME/export_options.plist -exportPath $HOME/build/ios/ipa
     artifacts:
+      - $HOME/build/ios/ipa/*.ipa
       - build/ios/ipa/*.ipa
     publishing:
       email:
