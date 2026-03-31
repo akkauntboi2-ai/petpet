@@ -189,7 +189,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(radiusSmall),
       ),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radiusLarge),
       ),
@@ -304,7 +304,7 @@ class AppTheme {
       selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
       unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       backgroundColor: darkCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radiusLarge),
