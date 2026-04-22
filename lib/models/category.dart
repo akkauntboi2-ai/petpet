@@ -52,8 +52,8 @@ class AppCategories {
       icon: '🐟',
       imagePath: 'assets/categories/fish.png',
       color: Colors.grey,
-    ),
-    Category(
+   c:\Users\REPOBLIC OF GAMERS\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TempState\ScreenClip\{19777EA6-FBF4-4006-9B16-A7CCB1C04635}.png ),
+    Category
       id: 'rodents',
       name: 'Грызуны',
       icon: '🐹',
