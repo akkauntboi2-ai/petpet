@@ -34,25 +34,26 @@ class AdsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Add ad locally and to server
-  Future<bool> addAd(Product product, {File? imageFile}) async {
+  // Add ad locally and sync to server in background
+  void addAd(Product product, {File? imageFile}) {
     _myAds.insert(0, product);
     notifyListeners();
 
-    // Try to sync with server
+    // Sync with server in background
+    _syncToServer(product, imageFile: imageFile);
+  }
+
+  Future<void> _syncToServer(Product product, {File? imageFile}) async {
     if (_isServerOnline) {
       final serverProduct = await ApiService.createPet(product, imageFile: imageFile);
       if (serverProduct != null) {
-        // Replace local with server version
         final index = _myAds.indexWhere((p) => p.id == product.id);
         if (index != -1) {
           _myAds[index] = serverProduct;
           notifyListeners();
         }
-        return true;
       }
     }
-    return false;
   }
 
   void removeAd(String productId) {
