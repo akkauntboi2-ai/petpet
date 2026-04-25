@@ -253,7 +253,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     final adsProvider = Provider.of<AdsProvider>(context);
 
     // Combine server ads and sample data, filter by category
-    final serverAds = adsProvider.allAds.where((ad) => ad.category == widget.category.id).toList();
+    final serverAds = adsProvider.allAds.where((ad) => ad.categoryId == widget.category.id).toList();
     final sampleProducts = SampleData.byCategory(widget.category.id);
     final allProducts = [...serverAds, ...sampleProducts];
     final products = _filterProducts(allProducts);
