@@ -160,6 +160,8 @@ class LanguageProvider extends ChangeNotifier {
       'reset': 'Сбросить',
       'view_grid': 'Сетка',
       'view_list': 'Список',
+      'auth_required': 'Требуется вход',
+      'auth_required_message': 'Для создания объявлений необходимо войти через Telegram',
     },
     'en': {
       'app_name': 'PetPet',
@@ -311,6 +313,8 @@ class LanguageProvider extends ChangeNotifier {
       'reset': 'Reset',
       'view_grid': 'Grid',
       'view_list': 'List',
+      'auth_required': 'Login Required',
+      'auth_required_message': 'You need to login via Telegram to create ads',
     },
     'uz': {
       'app_name': 'PetPet',
@@ -462,6 +466,8 @@ class LanguageProvider extends ChangeNotifier {
       'reset': 'Tiklash',
       'view_grid': 'Panjara',
       'view_list': 'Ro\'yxat',
+      'auth_required': 'Kirish talab qilinadi',
+      'auth_required_message': 'E\'lon qo\'shish uchun Telegram orqali kirish kerak',
     },
   };
 

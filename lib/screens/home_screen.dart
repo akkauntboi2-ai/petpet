@@ -7,10 +7,12 @@ import '../models/product.dart';
 import '../models/sample_data.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/ads_provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/language_provider.dart';
 import '../theme/app_theme.dart';
 import 'category_screen.dart';
 import 'add_ad_screen.dart';
+import 'auth_screen.dart';
 import 'product_detail_screen.dart';
 import 'search_screen.dart';
 
@@ -76,24 +78,63 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  void _checkAuthAndAddAd(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final langProvider = Provider.of<LanguageProvider>(context, listen: false);
+
+    if (authProvider.isLoggedIn) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => const AddAdScreen()));
+    } else {
+      // Show dialog asking to login
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(langProvider.tr('auth_required')),
+          content: Text(langProvider.tr('auth_required_message')),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(langProvider.tr('cancel')),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AuthScreen(
+                      onAuthSuccess: (name, phone, telegramId) {
+                        authProvider.completeAuth(name, phone, telegramId);
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: Text(langProvider.tr('login')),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final adsProvider = Provider.of<AdsProvider>(context);
     final langProvider = Provider.of<LanguageProvider>(context);
-    
 
-    // Combine user ads with sample data
-    final userTopAds = adsProvider.myAds.where((ad) => ad.isTop).toList();
+
+    // Combine ALL ads (server + local) with sample data
+    final allAds = adsProvider.allAds;
+    final userTopAds = allAds.where((ad) => ad.isTop).toList();
     final topProducts = [...userTopAds, ...SampleData.topAds];
 
-    final userNewAds = adsProvider.myAds.where((ad) => !ad.isTop).toList();
+    final userNewAds = allAds.where((ad) => !ad.isTop).toList();
     final newProducts = [...userNewAds, ...SampleData.newAds];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const AddAdScreen()));
-        },
+        onPressed: () => _checkAuthAndAddAd(context),
         backgroundColor: AppTheme.primary,
         elevation: 4,
         icon: const Icon(Icons.add, color: Colors.white),

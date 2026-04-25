@@ -53,6 +53,15 @@ class _AppStartState extends State<AppStart> {
   bool _showSplash = true;
 
   @override
+  void initState() {
+    super.initState();
+    // Load ads from server when app starts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AdsProvider>(context, listen: false).loadAds();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (_showSplash) {
       return SplashScreen(

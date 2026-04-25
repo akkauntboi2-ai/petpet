@@ -6,6 +6,7 @@ import '../models/product.dart';
 import '../models/sample_data.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/language_provider.dart';
+import '../providers/ads_provider.dart';
 import '../theme/app_theme.dart';
 import 'product_detail_screen.dart';
 
@@ -34,7 +35,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Future<void> _handleRefresh() async {
     setState(() => _isRefreshing = true);
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Provider.of<AdsProvider>(context, listen: false).refresh();
     setState(() => _isRefreshing = false);
   }
 
@@ -249,8 +250,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     final langProvider = Provider.of<LanguageProvider>(context);
-    
-    final allProducts = SampleData.byCategory(widget.category.id);
+    final adsProvider = Provider.of<AdsProvider>(context);
+
+    // Combine server ads and sample data, filter by category
+    final serverAds = adsProvider.allAds.where((ad) => ad.category == widget.category.id).toList();
+    final sampleProducts = SampleData.byCategory(widget.category.id);
+    final allProducts = [...serverAds, ...sampleProducts];
     final products = _filterProducts(allProducts);
 
     final hasActiveFilters = _selectedCity != null ||
