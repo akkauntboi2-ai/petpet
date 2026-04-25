@@ -24,10 +24,9 @@ class _AuthScreenState extends State<AuthScreen> with WidgetsBindingObserver {
   String? _telegramUsername;
   String? _telegramName;
   Timer? _checkTimer;
-  int _lastUpdateId = 0;
 
-  static const String botToken = '8024293449:AAEfyTzZerNUxxo-f13yO4ikZR45yUuh-1U';
   static const String botUsername = 'petpetuz_bot';
+  static const String serverUrl = 'http://217.145.226.216:3000';
 
   @override
   void initState() {
@@ -70,20 +69,6 @@ class _AuthScreenState extends State<AuthScreen> with WidgetsBindingObserver {
       _phoneNumber = phone;
     });
 
-    // Получаем последний update_id чтобы игнорировать старые сообщения
-    try {
-      final url = 'https://api.telegram.org/bot$botToken/getUpdates?offset=-1&limit=1';
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['ok'] == true && (data['result'] as List).isNotEmpty) {
-          _lastUpdateId = data['result'][0]['update_id'];
-        }
-      }
-    } catch (e) {
-      // ignore
-    }
-
     setState(() {
       _isLoading = false;
       _step = 2;
@@ -105,50 +90,26 @@ class _AuthScreenState extends State<AuthScreen> with WidgetsBindingObserver {
 
   Future<void> _checkTelegramAuth() async {
     try {
-      // Получаем новые сообщения после нашего запроса
-      final url = 'https://api.telegram.org/bot$botToken/getUpdates?offset=${_lastUpdateId + 1}&limit=20';
+      final cleanPhone = _cleanPhone(_phoneNumber);
+      final url = '$serverUrl/api/auth/check/$cleanPhone';
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        if (data['ok'] == true) {
-          final updates = data['result'] as List;
 
-          for (var update in updates) {
-            _lastUpdateId = update['update_id'];
+        if (data['confirmed'] == true && data['user'] != null) {
+          // Нашли подтверждение!
+          _checkTimer?.cancel();
 
-            if (update['message'] != null) {
-              final message = update['message'];
-              final contact = message['contact'];
+          final user = data['user'];
+          _telegramUsername = user['username'];
+          _telegramName = user['first_name'] ?? '';
 
-              if (contact != null) {
-                final contactPhone = _cleanPhone(contact['phone_number'] ?? '');
-                final myPhone = _cleanPhone(_phoneNumber);
+          // Заполняем имя из Telegram
+          _nameController.text = _telegramName ?? '';
 
-                // Проверяем совпадение номеров (с учетом кода страны)
-                if (contactPhone.endsWith(myPhone) ||
-                    myPhone.endsWith(contactPhone) ||
-                    contactPhone == myPhone ||
-                    contactPhone.contains(myPhone) ||
-                    myPhone.contains(contactPhone)) {
-
-                  // Нашли совпадение!
-                  _checkTimer?.cancel();
-
-                  final user = message['from'];
-                  _telegramUsername = user['username'];
-                  _telegramName = user['first_name'] ?? '';
-
-                  // Заполняем имя из Telegram
-                  _nameController.text = _telegramName ?? '';
-
-                  if (mounted) {
-                    setState(() => _step = 3);
-                  }
-                  return;
-                }
-              }
-            }
+          if (mounted) {
+            setState(() => _step = 3);
           }
         }
       }
