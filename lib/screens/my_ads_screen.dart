@@ -371,6 +371,13 @@ class MyAdsScreen extends StatelessWidget {
                         ],
                       ),
                     );
+                  } else if (value == 'edit') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AddAdScreen(existingProduct: ad),
+                      ),
+                    );
                   } else if (value == 'boost') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('TOP продвижение скоро будет доступно')),

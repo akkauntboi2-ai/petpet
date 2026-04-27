@@ -9,7 +9,9 @@ import '../models/product.dart';
 import '../theme/app_theme.dart';
 
 class AddAdScreen extends StatefulWidget {
-  const AddAdScreen({super.key});
+  final Product? existingProduct;
+
+  const AddAdScreen({super.key, this.existingProduct});
 
   @override
   State<AddAdScreen> createState() => _AddAdScreenState();
@@ -80,12 +82,35 @@ class _AddAdScreenState extends State<AddAdScreen> {
     30: 50000,
   };
 
+  bool get isEditing => widget.existingProduct != null;
+
   @override
   void initState() {
     super.initState();
+
+    // Fill fields if editing existing product
+    if (widget.existingProduct != null) {
+      final p = widget.existingProduct!;
+      _titleController.text = p.name;
+      _priceController.text = p.price.toStringAsFixed(0);
+      _descriptionController.text = p.description;
+      _breedController.text = p.breed ?? '';
+      _ageController.text = p.age ?? '';
+      _colorController.text = p.color ?? '';
+      _phoneController.text = p.sellerPhone ?? '';
+      _telegramController.text = p.sellerTelegram?.replaceFirst('@', '') ?? '';
+      _selectedCategory = p.categoryId;
+      _selectedCity = p.city ?? 'Ташкент';
+      _selectedGender = p.gender;
+      _selectedCurrency = p.currency;
+      _isVaccinated = p.isVaccinated;
+      _isNegotiable = p.isNegotiable;
+      _isTopPromotion = p.isTop;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final auth = Provider.of<AuthProvider>(context, listen: false);
-      if (auth.user != null) {
+      if (auth.user != null && !isEditing) {
         _phoneController.text = auth.user!.phone;
         if (auth.user!.telegramUsername != null) {
           _telegramController.text = auth.user!.telegramUsername!.replaceFirst('@', '');
@@ -218,7 +243,8 @@ class _AddAdScreenState extends State<AddAdScreen> {
 
   void _submitAd() {
     if (_formKey.currentState!.validate()) {
-      if (_photos.isEmpty) {
+      // For new ads, require at least one photo; for editing, use existing if no new photos
+      if (_photos.isEmpty && !isEditing) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Добавьте хотя бы одно фото'),
@@ -232,12 +258,27 @@ class _AddAdScreenState extends State<AddAdScreen> {
       final auth = Provider.of<AuthProvider>(context, listen: false);
       final adsProvider = Provider.of<AdsProvider>(context, listen: false);
 
+      // Determine image URL and additional images
+      String imageUrl;
+      List<String> additionalImages;
+
+      if (_photos.isNotEmpty) {
+        imageUrl = _photos.first.path;
+        additionalImages = _photos.skip(1).map((p) => p.path).toList();
+      } else if (isEditing) {
+        imageUrl = widget.existingProduct!.imageUrl;
+        additionalImages = widget.existingProduct!.images;
+      } else {
+        imageUrl = '';
+        additionalImages = [];
+      }
+
       final product = Product(
-        id: 'ad_${DateTime.now().millisecondsSinceEpoch}',
+        id: isEditing ? widget.existingProduct!.id : 'ad_${DateTime.now().millisecondsSinceEpoch}',
         name: _titleController.text,
         description: _descriptionController.text,
         price: _isNegotiable ? 0 : (double.tryParse(_priceController.text.replaceAll(' ', '')) ?? 0),
-        imageUrl: _photos.isNotEmpty ? _photos.first.path : '',
+        imageUrl: imageUrl,
         categoryId: _selectedCategory,
         categoryName: _categories[_selectedCategory] ?? '',
         breed: _breedController.text.isNotEmpty ? _breedController.text : null,
@@ -251,12 +292,16 @@ class _AddAdScreenState extends State<AddAdScreen> {
         sellerName: auth.user?.name ?? 'Продавец',
         sellerPhone: _phoneController.text,
         sellerTelegram: _telegramController.text.isNotEmpty ? '@${_telegramController.text}' : null,
-        createdAt: DateTime.now(),
-        images: _photos.skip(1).map((p) => p.path).toList(),
+        createdAt: isEditing ? widget.existingProduct!.createdAt : DateTime.now(),
+        images: additionalImages,
         currency: _selectedCurrency,
       );
 
-      adsProvider.addAd(product);
+      if (isEditing) {
+        adsProvider.updateAd(product);
+      } else {
+        adsProvider.addAd(product);
+      }
 
       showDialog(
         context: context,
@@ -275,14 +320,16 @@ class _AddAdScreenState extends State<AddAdScreen> {
                 child: const Icon(Icons.check, color: AppTheme.primary, size: 48),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Объявление опубликовано!',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                isEditing ? 'Изменения сохранены!' : 'Объявление опубликовано!',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
               Text(
-                'Ваше объявление успешно добавлено и уже доступно для просмотра',
+                isEditing
+                    ? 'Ваше объявление успешно обновлено'
+                    : 'Ваше объявление успешно добавлено и уже доступно для просмотра',
                 style: TextStyle(color: Colors.grey.shade600),
                 textAlign: TextAlign.center,
               ),
@@ -353,7 +400,7 @@ class _AddAdScreenState extends State<AddAdScreen> {
             backgroundColor: AppTheme.primary,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                lang.tr('new_ad'),
+                isEditing ? lang.tr('edit') : lang.tr('new_ad'),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               background: Container(
