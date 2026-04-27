@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
 
@@ -9,6 +11,8 @@ class AdsProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _isServerOnline = false;
 
+  static const String _myAdsKey = 'petpet_my_ads';
+
   List<Product> get myAds => _myAds;
   List<Product> get serverAds => _serverAds;
   List<Product> get allAds => [..._serverAds, ..._myAds];
@@ -16,10 +20,39 @@ class AdsProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isServerOnline => _isServerOnline;
 
+  // Load saved ads from SharedPreferences
+  Future<void> loadSavedAds() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final adsJson = prefs.getString(_myAdsKey);
+      if (adsJson != null) {
+        final List<dynamic> adsList = json.decode(adsJson);
+        _myAds = adsList.map((e) => Product.fromJson(e)).toList();
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error loading saved ads: $e');
+    }
+  }
+
+  // Save ads to SharedPreferences
+  Future<void> _saveAds() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final adsJson = json.encode(_myAds.map((e) => e.toJson()).toList());
+      await prefs.setString(_myAdsKey, adsJson);
+    } catch (e) {
+      print('Error saving ads: $e');
+    }
+  }
+
   // Load ads from server
   Future<void> loadAds() async {
     _isLoading = true;
     notifyListeners();
+
+    // First load saved ads
+    await loadSavedAds();
 
     try {
       _isServerOnline = await ApiService.checkHealth();
@@ -38,6 +71,7 @@ class AdsProvider with ChangeNotifier {
   void addAd(Product product, {File? imageFile}) {
     _myAds.insert(0, product);
     notifyListeners();
+    _saveAds();
 
     // Sync with server in background
     _syncToServer(product, imageFile: imageFile);
@@ -51,6 +85,7 @@ class AdsProvider with ChangeNotifier {
         if (index != -1) {
           _myAds[index] = serverProduct;
           notifyListeners();
+          _saveAds();
         }
       }
     }
@@ -60,6 +95,7 @@ class AdsProvider with ChangeNotifier {
     _myAds.removeWhere((p) => p.id == productId);
     ApiService.deletePet(productId);
     notifyListeners();
+    _saveAds();
   }
 
   void updateAd(Product product) {
@@ -67,6 +103,7 @@ class AdsProvider with ChangeNotifier {
     if (index != -1) {
       _myAds[index] = product;
       notifyListeners();
+      _saveAds();
     }
   }
 

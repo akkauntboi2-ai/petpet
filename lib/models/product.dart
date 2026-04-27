@@ -82,4 +82,60 @@ class Product {
     }
     return result;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'oldPrice': oldPrice,
+      'imageUrl': imageUrl,
+      'categoryId': categoryId,
+      'categoryName': categoryName,
+      'rating': rating,
+      'breed': breed,
+      'age': age,
+      'gender': gender,
+      'isVaccinated': isVaccinated,
+      'isNegotiable': isNegotiable,
+      'color': color,
+      'city': city,
+      'isTop': isTop,
+      'sellerName': sellerName,
+      'sellerPhone': sellerPhone,
+      'sellerTelegram': sellerTelegram,
+      'createdAt': createdAt?.toIso8601String(),
+      'images': images,
+      'currency': currency,
+    };
+  }
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      price: (json['price'] ?? 0).toDouble(),
+      oldPrice: json['oldPrice']?.toDouble(),
+      imageUrl: json['imageUrl'] ?? '',
+      categoryId: json['categoryId'] ?? '',
+      categoryName: json['categoryName'] ?? '',
+      rating: (json['rating'] ?? 4.5).toDouble(),
+      breed: json['breed'],
+      age: json['age'],
+      gender: json['gender'],
+      isVaccinated: json['isVaccinated'] ?? false,
+      isNegotiable: json['isNegotiable'] ?? false,
+      color: json['color'],
+      city: json['city'],
+      isTop: json['isTop'] ?? false,
+      sellerName: json['sellerName'],
+      sellerPhone: json['sellerPhone'],
+      sellerTelegram: json['sellerTelegram'],
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      images: List<String>.from(json['images'] ?? []),
+      currency: json['currency'] ?? 'sum',
+    );
+  }
 }
