@@ -55,8 +55,9 @@ class _AppStartState extends State<AppStart> {
   @override
   void initState() {
     super.initState();
-    // Load ads from server when app starts
+    // Load saved user and ads from server when app starts
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AuthProvider>(context, listen: false).loadUser();
       Provider.of<AdsProvider>(context, listen: false).loadAds();
     });
   }

@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
   final String id;
@@ -35,10 +37,39 @@ class User {
 class AuthProvider with ChangeNotifier {
   User? _user;
   bool _isLoading = false;
+  static const String _userKey = 'petpet_user';
 
   User? get user => _user;
   bool get isLoggedIn => _user != null;
   bool get isLoading => _isLoading;
+
+  // Загрузить сохраненного пользователя при запуске
+  Future<void> loadUser() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString(_userKey);
+      if (userJson != null) {
+        _user = User.fromJson(json.decode(userJson));
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading user: $e');
+    }
+  }
+
+  // Сохранить пользователя
+  Future<void> _saveUser() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (_user != null) {
+        await prefs.setString(_userKey, json.encode(_user!.toJson()));
+      } else {
+        await prefs.remove(_userKey);
+      }
+    } catch (e) {
+      debugPrint('Error saving user: $e');
+    }
+  }
 
   // Этот метод вызывается из AuthScreen после успешной авторизации
   void completeAuth(String name, String phone, String? telegramUsername) {
@@ -48,16 +79,19 @@ class AuthProvider with ChangeNotifier {
       phone: phone,
       telegramUsername: telegramUsername != null ? '@$telegramUsername' : null,
     );
+    _saveUser();
     notifyListeners();
   }
 
   void setUser(User user) {
     _user = user;
+    _saveUser();
     notifyListeners();
   }
 
   void logout() {
     _user = null;
+    _saveUser();
     notifyListeners();
   }
 
@@ -70,6 +104,7 @@ class AuthProvider with ChangeNotifier {
         telegramUsername: telegramUsername ?? _user!.telegramUsername,
         avatarUrl: _user!.avatarUrl,
       );
+      _saveUser();
       notifyListeners();
     }
   }

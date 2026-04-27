@@ -19,6 +19,9 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter pub get
+      - name: Generate app icons
+        script: |
+          dart run flutter_launcher_icons
       - name: Install CocoaPods
         script: |
           cd ios && pod install

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -201,18 +202,7 @@ class FavoritesScreen extends StatelessWidget {
                                     borderRadius: const BorderRadius.horizontal(
                                       left: Radius.circular(20),
                                     ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: product.imageUrl,
-                                      width: 130,
-                                      height: 130,
-                                      fit: BoxFit.cover,
-                                      placeholder: (_, __) => Container(
-                                        color: Colors.grey.shade100,
-                                        child: const Center(
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        ),
-                                      ),
-                                    ),
+                                    child: _buildProductImage(product.imageUrl),
                                   ),
                                   if (product.isTop)
                                     Positioned(
@@ -377,5 +367,39 @@ class FavoritesScreen extends StatelessWidget {
       }
     }
     return lang.tr('items_many');
+  }
+
+  Widget _buildProductImage(String imageUrl) {
+    final isLocalFile = imageUrl.startsWith('/') || imageUrl.contains('cache');
+
+    if (isLocalFile) {
+      return Image.file(
+        File(imageUrl),
+        width: 130,
+        height: 130,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          width: 130,
+          height: 130,
+          color: Colors.grey.shade200,
+          child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+        ),
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      width: 130,
+      height: 130,
+      fit: BoxFit.cover,
+      placeholder: (_, __) => Container(
+        color: Colors.grey.shade100,
+        child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+      errorWidget: (_, __, ___) => Container(
+        color: Colors.grey.shade200,
+        child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+      ),
+    );
   }
 }
