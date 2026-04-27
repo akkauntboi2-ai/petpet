@@ -49,6 +49,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       case 'rodents': return langProvider.tr('rodents');
       case 'reptiles': return langProvider.tr('reptiles');
       case 'insects': return langProvider.tr('insects');
+      case 'wild': return langProvider.tr('wild');
       default: return widget.category.name;
     }
   }

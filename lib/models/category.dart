@@ -74,6 +74,13 @@ class AppCategories {
       imagePath: 'assets/categories/insects.png',
       color: Colors.grey,
     ),
+    Category(
+      id: 'wild',
+      name: 'Дикие',
+      icon: '🐺',
+      imagePath: 'assets/categories/wild.png',
+      color: Colors.grey,
+    ),
   ];
 
   static final List<Category> accessories = [
