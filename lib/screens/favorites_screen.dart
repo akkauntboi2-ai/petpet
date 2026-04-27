@@ -6,6 +6,7 @@ import '../providers/favorites_provider.dart';
 import '../providers/language_provider.dart';
 import '../theme/app_theme.dart';
 import 'product_detail_screen.dart';
+import 'main_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -64,7 +65,7 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton.icon(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => MainScreen.switchToTab(1),
                     icon: const Icon(Icons.search),
                     label: Text(lang.tr('go_to_search')),
                     style: ElevatedButton.styleFrom(

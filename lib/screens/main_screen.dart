@@ -10,12 +10,29 @@ import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+
+  static _MainScreenState? _instance;
+
+  static void switchToTab(int index) {
+    _instance?.switchTab(index);
+  }
+
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
   int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    MainScreen._instance = this;
+  }
+
+  void switchTab(int index) {
+    setState(() => _index = index);
+  }
   final _screens = const [HomeScreen(), CatalogScreen(), FavoritesScreen(), ProfileScreen()];
 
   @override
