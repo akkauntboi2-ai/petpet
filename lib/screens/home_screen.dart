@@ -838,23 +838,54 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildProductImage(String imageUrl, double width, double height) {
-    final isLocalFile = imageUrl.startsWith('/') || imageUrl.contains('cache');
-
-    if (isLocalFile) {
-      return Image.file(
-        File(imageUrl),
+    // Handle empty URLs
+    if (imageUrl.isEmpty) {
+      return Container(
         width: width,
         height: height,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          width: width,
-          height: height,
-          color: Colors.grey.shade200,
-          child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+        color: Colors.grey.shade100,
+        child: Center(
+          child: Icon(Icons.pets, size: 40, color: Colors.grey.shade400),
         ),
       );
     }
 
+    final isLocalFile = imageUrl.startsWith('/') ||
+                        imageUrl.startsWith('C:') ||
+                        imageUrl.startsWith('c:') ||
+                        imageUrl.contains('cache') ||
+                        imageUrl.contains('tmp');
+
+    if (isLocalFile) {
+      final file = File(imageUrl);
+      return FutureBuilder<bool>(
+        future: file.exists(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data == true) {
+            return Image.file(
+              file,
+              width: width,
+              height: height,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: width,
+                height: height,
+                color: Colors.grey.shade100,
+                child: Icon(Icons.pets, size: 40, color: Colors.grey.shade400),
+              ),
+            );
+          }
+          return Container(
+            width: width,
+            height: height,
+            color: Colors.grey.shade100,
+            child: Icon(Icons.pets, size: 40, color: Colors.grey.shade400),
+          );
+        },
+      );
+    }
+
+    // Network image
     return CachedNetworkImage(
       imageUrl: imageUrl,
       width: width,
@@ -865,8 +896,8 @@ class HomeScreen extends StatelessWidget {
         child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
       ),
       errorWidget: (_, __, ___) => Container(
-        color: Colors.grey.shade200,
-        child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+        color: Colors.grey.shade100,
+        child: Icon(Icons.pets, size: 40, color: Colors.grey.shade400),
       ),
     );
   }

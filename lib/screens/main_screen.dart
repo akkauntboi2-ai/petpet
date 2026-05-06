@@ -5,6 +5,7 @@ import '../providers/language_provider.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 import 'catalog_screen.dart';
+import 'vet_screen.dart';
 import 'favorites_screen.dart';
 import 'profile_screen.dart';
 
@@ -33,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   void switchTab(int index) {
     setState(() => _index = index);
   }
-  final _screens = const [HomeScreen(), CatalogScreen(), FavoritesScreen(), ProfileScreen()];
+  final _screens = const [HomeScreen(), CatalogScreen(), VetScreen(), FavoritesScreen(), ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +73,11 @@ class _MainScreenState extends State<MainScreen> {
               icon: const Icon(Icons.apps_outlined),
               activeIcon: const Icon(Icons.apps),
               label: lang.tr('catalog'),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.local_hospital_outlined),
+              activeIcon: const Icon(Icons.local_hospital),
+              label: 'Vet',
             ),
             BottomNavigationBarItem(
               icon: Consumer<FavoritesProvider>(

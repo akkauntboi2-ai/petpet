@@ -392,46 +392,103 @@ class _AddAdScreenState extends State<AddAdScreen> {
       backgroundColor: Colors.grey.shade50,
       body: CustomScrollView(
         slivers: [
-          // Premium App Bar
+          // Premium App Bar with enhanced design
           SliverAppBar(
-            expandedHeight: 120,
+            expandedHeight: 160,
             floating: false,
             pinned: true,
             backgroundColor: AppTheme.primary,
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 50, bottom: 16),
               title: Text(
                 isEditing ? lang.tr('edit') : lang.tr('new_ad'),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black26,
+                      offset: Offset(0, 2),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
               ),
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppTheme.primary, AppTheme.primaryDark],
+                    colors: [
+                      Color(0xFF43A047),
+                      Color(0xFF2E7D32),
+                      Color(0xFF1B5E20),
+                    ],
                   ),
                 ),
                 child: Stack(
                   children: [
+                    // Decorative circles
                     Positioned(
-                      right: -50,
-                      top: -50,
+                      right: -30,
+                      top: -30,
                       child: Container(
-                        width: 200,
-                        height: 200,
+                        width: 150,
+                        height: 150,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withOpacity(0.08),
                         ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 60,
+                      top: 40,
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.05),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: -40,
+                      bottom: -20,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.06),
+                        ),
+                      ),
+                    ),
+                    // Pet icon
+                    Positioned(
+                      right: 30,
+                      bottom: 50,
+                      child: Icon(
+                        Icons.pets,
+                        size: 60,
+                        color: Colors.white.withOpacity(0.15),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
+            leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+              ),
             ),
           ),
 
@@ -440,31 +497,39 @@ class _AddAdScreenState extends State<AddAdScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  // Free badge
+                  // Free badge - Enhanced
                   Container(
                     margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                         colors: [
-                          AppTheme.primary.withOpacity(0.1),
-                          AppTheme.primaryLight.withOpacity(0.1),
+                          Color(0xFF43A047),
+                          Color(0xFF66BB6A),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppTheme.primary.withOpacity(0.3)),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.primary.withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppTheme.primary,
-                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.card_giftcard, color: Colors.white, size: 20),
+                          child: const Icon(Icons.verified, color: Colors.white, size: 28),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,17 +537,26 @@ class _AddAdScreenState extends State<AddAdScreen> {
                               Text(
                                 lang.tr('free_posting'),
                                 style: const TextStyle(
-                                  color: AppTheme.primary,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: 17,
                                 ),
                               ),
+                              const SizedBox(height: 2),
                               Text(
                                 lang.tr('ad_active_30_days'),
-                                style: const TextStyle(color: AppTheme.primary, fontSize: 12),
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 13,
+                                ),
                               ),
                             ],
                           ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white.withOpacity(0.5),
+                          size: 18,
                         ),
                       ],
                     ),
