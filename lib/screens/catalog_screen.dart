@@ -122,30 +122,16 @@ class _CatalogScreenState extends State<CatalogScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          lang.tr('animals'),
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          lang.tr('choose_pet'),
-                          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                        ),
-                      ],
+                    Text(
+                      lang.tr('animals'),
+                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Row(
-                        children: [
-                          Text(lang.tr('more'), style: TextStyle(color: Colors.grey.shade700)),
-                          Icon(Icons.chevron_right, color: Colors.grey.shade700, size: 20),
-                        ],
-                      ),
+                    Text(
+                      lang.tr('choose_pet'),
+                      style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                     ),
                   ],
                 ),
@@ -171,30 +157,16 @@ class _CatalogScreenState extends State<CatalogScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          lang.tr('products'),
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          lang.tr('for_pets'),
-                          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                        ),
-                      ],
+                    Text(
+                      lang.tr('products'),
+                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Row(
-                        children: [
-                          Text(lang.tr('more'), style: TextStyle(color: Colors.grey.shade700)),
-                          Icon(Icons.chevron_right, color: Colors.grey.shade700, size: 20),
-                        ],
-                      ),
+                    Text(
+                      lang.tr('for_pets'),
+                      style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                     ),
                   ],
                 ),

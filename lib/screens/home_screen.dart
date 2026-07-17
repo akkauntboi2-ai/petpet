@@ -15,6 +15,7 @@ import 'add_ad_screen.dart';
 import 'auth_screen.dart';
 import 'product_detail_screen.dart';
 import 'search_screen.dart';
+import 'main_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -267,8 +268,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
-                      child: Text(langProvider.tr('all'), style: TextStyle(color: Colors.grey.shade600)),
+                      onPressed: () => MainScreen.switchToTab(1),
+                      child: Text(langProvider.tr('all'), style: TextStyle(color: AppTheme.primary)),
                     ),
                   ],
                 ),
