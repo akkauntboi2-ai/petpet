@@ -111,7 +111,7 @@ class AppTheme {
         letterSpacing: -0.5,
       ),
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radiusMedium),
@@ -189,7 +189,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(radiusSmall),
       ),
     ),
-    dialogTheme: DialogThemeData(
+    dialogTheme: DialogTheme(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radiusLarge),
       ),
@@ -253,7 +253,7 @@ class AppTheme {
         letterSpacing: -0.5,
       ),
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radiusMedium),
@@ -304,7 +304,7 @@ class AppTheme {
       selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
       unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
     ),
-    dialogTheme: DialogThemeData(
+    dialogTheme: DialogTheme(
       backgroundColor: darkCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radiusLarge),
