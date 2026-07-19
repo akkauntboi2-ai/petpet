@@ -1,44 +1,50 @@
 workflows:
-  ios-test:
-    name: iOS Test Build
+  ios-testflight:
+    name: iOS TestFlight
     max_build_duration: 60
     instance_type: mac_mini_m2
     environment:
       flutter: stable
       xcode: latest
+      vars:
+        BUNDLE_ID: "com.petshopx2025.app"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "HC56X24H7K"
+        APP_STORE_CONNECT_ISSUER_ID: "e1f98c09-18c3-4d1a-91e2-cace11d10093"
+        APP_STORE_CONNECT_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgqrddgyBKOqJPg4Iu
+          f5iV9TkCT2t10b4nJYuGgqQtnzugCgYIKoZIzj0DAQehRANCAAR641E3UuTqQzFC
+          loxXrMkIuz95aF0KVaRie2Dp4qCOPapeNYAbnR3CK52pIag2b1jIhATB80lkfdjt
+          vAEpJMaT
+          -----END PRIVATE KEY-----
     scripts:
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Migrate to Swift Package Manager
+      - name: Clean iOS
         script: |
           cd ios
-          # Remove CocoaPods completely
           pod deintegrate || true
-          rm -rf Pods
-          rm -f Podfile.lock
-          rm -f .symlinks
-          rm -rf Flutter/ephemeral
-          # Remove Podfile to force SPM
-          rm -f Podfile
+          rm -rf Pods Podfile.lock .symlinks Podfile
           cd ..
-      - name: Clean Flutter
-        script: |
           flutter clean
           flutter pub get
-      - name: Build iOS (no codesign)
+      - name: Build IPA
         script: |
-          flutter build ios --release --no-codesign
-      - name: Create unsigned IPA
-        script: |
-          cd build/ios/iphoneos
-          mkdir -p Payload
-          cp -r Runner.app Payload/
-          zip -r PetPet_unsigned.ipa Payload
-          mv PetPet_unsigned.ipa ../../../
+          flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
     artifacts:
-      - "*.ipa"
-      - build/ios/iphoneos/Runner.app
+      - build/ios/ipa/*.ipa
     publishing:
       email:
         recipients:
           - saidtadjievfaris@icloud.com
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
