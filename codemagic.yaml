@@ -1,29 +1,35 @@
 workflows:
-  ios-release:
-    name: iOS Release
+  ios-test:
+    name: iOS Test Build
     max_build_duration: 60
     instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic
     environment:
       flutter: stable
       xcode: latest
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.petshopx2025.app
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Generate app icons
-        script: dart run flutter_launcher_icons
-      - name: Clean iOS build
+      - name: Clean iOS
         script: |
-          cd ios && rm -rf Pods Podfile.lock .symlinks && cd ..
-          flutter clean && flutter pub get
-      - name: Build IPA
-        script: flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
+          cd ios
+          rm -rf Pods Podfile.lock .symlinks
+          pod deintegrate || true
+          cd ..
+          flutter clean
+          flutter pub get
+      - name: Build iOS (no codesign)
+        script: |
+          flutter build ios --release --no-codesign
+      - name: Create unsigned IPA
+        script: |
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r PetPet_unsigned.ipa Payload
+          mv PetPet_unsigned.ipa ../../../
     artifacts:
-      - build/ios/ipa/*.ipa
+      - "*.ipa"
+      - build/ios/iphoneos/Runner.app
     publishing:
       email:
         recipients:
