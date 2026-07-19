@@ -9,12 +9,20 @@ workflows:
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Clean iOS
+      - name: Migrate to Swift Package Manager
         script: |
           cd ios
-          rm -rf Pods Podfile.lock .symlinks
+          # Remove CocoaPods completely
           pod deintegrate || true
+          rm -rf Pods
+          rm -f Podfile.lock
+          rm -f .symlinks
+          rm -rf Flutter/ephemeral
+          # Remove Podfile to force SPM
+          rm -f Podfile
           cd ..
+      - name: Clean Flutter
+        script: |
           flutter clean
           flutter pub get
       - name: Build iOS (no codesign)
