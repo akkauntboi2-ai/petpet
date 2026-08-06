@@ -6,23 +6,19 @@ workflows:
     environment:
       flutter: stable
       xcode: latest
+      groups:
+        - appstore_credentials
       vars:
         BUNDLE_ID: "com.petshopx2025.app"
-        APP_STORE_CONNECT_KEY_IDENTIFIER: "HC56X24H7K"
-        APP_STORE_CONNECT_ISSUER_ID: "e1f98c09-18c3-4d1a-91e2-cace11d10093"
-        APP_STORE_CONNECT_PRIVATE_KEY: |
-          -----BEGIN PRIVATE KEY-----
-          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgqrddgyBKOqJPg4Iu
-          f5iV9TkCT2t10b4nJYuGgqQtnzugCgYIKoZIzj0DAQehRANCAAR641E3UuTqQzFC
-          loxXrMkIuz95aF0KVaRie2Dp4qCOPapeNYAbnR3CK52pIag2b1jIhATB80lkfdjt
-          vAEpJMaT
-          -----END PRIVATE KEY-----
     scripts:
       - name: Set up code signing
         script: |
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            --private-key "$APP_STORE_CONNECT_PRIVATE_KEY" \
             --create
           keychain add-certificates
           xcode-project use-profiles
@@ -38,7 +34,7 @@ workflows:
           flutter pub get
       - name: Build IPA
         script: |
-          flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
+          flutter build ipa --release
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
