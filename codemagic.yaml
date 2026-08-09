@@ -3,27 +3,16 @@ workflows:
     name: iOS Release
     max_build_duration: 60
     instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: appstore
     environment:
       flutter: stable
       xcode: latest
       cocoapods: default
-      vars:
-        APP_STORE_CONNECT_KEY_IDENTIFIER: "A899CQL63F"
-        APP_STORE_CONNECT_ISSUER_ID: "e1f98c09-18c3-4d1a-91e2-cace11d10093"
-        APP_STORE_CONNECT_PRIVATE_KEY: |
-          -----BEGIN PRIVATE KEY-----
-          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgc/D9bGNuNJ5cZRbw
-          B6lR+r8/FoPUaBEfRuvogE8fXK2gCgYIKoZIzj0DAQehRANCAARSf/ywUg8HL1YI
-          1tTrA4rwU6utA7g2dbyqilw0K/9nMY1AL9lVM6L2mU3gwLi9xzMtFUZDB3W675VP
-          1PVKIxHg
-          -----END PRIVATE KEY-----
     scripts:
       - name: Set up code signing
         script: |
           keychain initialize
-          # Create certificate first
-          app-store-connect certificates create --type IOS_DISTRIBUTION --save
-          # Fetch signing files
           app-store-connect fetch-signing-files "com.petshopx2025.app" \
             --type IOS_APP_STORE \
             --create
@@ -45,6 +34,4 @@ workflows:
         recipients:
           - saidtadjievfaris@icloud.com
       app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        auth: integration
