@@ -21,7 +21,11 @@ workflows:
       - name: Set up code signing
         script: |
           keychain initialize
-          app-store-connect fetch-signing-files "com.petshopx2025.app" --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files "com.petshopx2025.app" \
+            --type IOS_APP_STORE \
+            --create \
+            --create-certificate \
+            --strict-match-identifier
           keychain add-certificates
           xcode-project use-profiles --export-options-plist=$HOME/export_options.plist
       - name: Get Flutter packages
