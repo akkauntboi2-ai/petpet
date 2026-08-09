@@ -1,13 +1,13 @@
 workflows:
-  ios-testflight:
-    name: iOS TestFlight
+  ios-release:
+    name: iOS Release
     max_build_duration: 60
-    instance_type: mac_mini_m2
+    instance_type: mac_mini_m1
     environment:
       flutter: stable
       xcode: latest
+      cocoapods: default
       vars:
-        BUNDLE_ID: "com.petshopx2025.app"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "A899CQL63F"
         APP_STORE_CONNECT_ISSUER_ID: "e1f98c09-18c3-4d1a-91e2-cace11d10093"
         APP_STORE_CONNECT_PRIVATE_KEY: |
@@ -17,35 +17,22 @@ workflows:
           1tTrA4rwU6utA7g2dbyqilw0K/9nMY1AL9lVM6L2mU3gwLi9xzMtFUZDB3W675VP
           1PVKIxHg
           -----END PRIVATE KEY-----
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.petshopx2025.app
     scripts:
-      - name: Set up keychain
+      - name: Set up code signing
         script: |
           keychain initialize
-      - name: Fetch signing files
-        script: |
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create
-      - name: Set up signing
-        script: |
+          app-store-connect fetch-signing-files "com.petshopx2025.app" --type IOS_APP_STORE --create
           keychain add-certificates
-          xcode-project use-profiles
+          xcode-project use-profiles --export-options-plist=$HOME/export_options.plist
       - name: Get Flutter packages
-        script: flutter pub get
-      - name: Clean iOS
         script: |
-          cd ios
-          pod deintegrate || true
-          rm -rf Pods Podfile.lock .symlinks Podfile
-          cd ..
-          flutter clean
           flutter pub get
+      - name: Install CocoaPods
+        script: |
+          cd ios && pod install
       - name: Build IPA
         script: |
-          flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
+          flutter build ipa --release --export-options-plist=$HOME/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
@@ -56,4 +43,3 @@ workflows:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
