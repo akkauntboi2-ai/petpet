@@ -8,14 +8,14 @@ workflows:
       xcode: latest
       vars:
         BUNDLE_ID: "com.petshopx2025.app"
-        APP_STORE_CONNECT_KEY_IDENTIFIER: "88SH9JZF6R"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "A899CQL63F"
         APP_STORE_CONNECT_ISSUER_ID: "e1f98c09-18c3-4d1a-91e2-cace11d10093"
         APP_STORE_CONNECT_PRIVATE_KEY: |
           -----BEGIN PRIVATE KEY-----
-          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg0ilDCxDvBRptA7Vo
-          GBBUc1slRnqOqfw/KbUquBZmnWWgCgYIKoZIzj0DAQehRANCAARDpaFcLv8WCUXI
-          3vuocWrSAnY3piHblCbAbj0DVe3YEqolr/h4P+9OaVyHwM67ndfUci086RLqyknm
-          eG0TLhy7
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgc/D9bGNuNJ5cZRbw
+          B6lR+r8/FoPUaBEfRuvogE8fXK2gCgYIKoZIzj0DAQehRANCAARSf/ywUg8HL1YI
+          1tTrA4rwU6utA7g2dbyqilw0K/9nMY1AL9lVM6L2mU3gwLi9xzMtFUZDB3W675VP
+          1PVKIxHg
           -----END PRIVATE KEY-----
       ios_signing:
         distribution_type: app_store
