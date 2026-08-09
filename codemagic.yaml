@@ -17,13 +17,20 @@ workflows:
           3vuocWrSAnY3piHblCbAbj0DVe3YEqolr/h4P+9OaVyHwM67ndfUci086RLqyknm
           eG0TLhy7
           -----END PRIVATE KEY-----
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.petshopx2025.app
     scripts:
-      - name: Set up code signing
+      - name: Set up keychain
         script: |
           keychain initialize
+      - name: Fetch signing files
+        script: |
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
+      - name: Set up signing
+        script: |
           keychain add-certificates
           xcode-project use-profiles
       - name: Get Flutter packages
