@@ -14,6 +14,8 @@ workflows:
         script: flutter pub get
       - name: Install CocoaPods
         script: cd ios && pod install
+      - name: Flutter build iOS
+        script: flutter build ios --release --no-codesign
       - name: Set up code signing
         script: |
           keychain initialize
@@ -25,14 +27,13 @@ workflows:
           xcode-project use-profiles \
             --project=ios/Runner.xcodeproj \
             --export-options-plist=/Users/builder/export_options.plist
-      - name: Flutter build iOS
-        script: flutter build ios --release --no-codesign
       - name: Build IPA
         script: |
           xcode-project build-ipa \
             --workspace ios/Runner.xcworkspace \
             --scheme Runner \
-            --export-options-plist=/Users/builder/export_options.plist
+            --export-options-plist=/Users/builder/export_options.plist \
+            --archive-flags="-destination 'generic/platform=iOS'"
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
