@@ -21,17 +21,14 @@ workflows:
           keychain initialize
           app-store-connect fetch-signing-files "com.petshopx2025.app" \
             --type IOS_APP_STORE \
-            --create \
-            --verbose
+            --create
           keychain add-certificates
           xcode-project use-profiles \
             --project=ios/Runner.xcodeproj \
-            --target=Runner \
-            --export-options-plist=/Users/builder/export_options.plist \
-            --verbose
-          cat /Users/builder/export_options.plist
+            --export-options-plist=/Users/builder/export_options.plist
       - name: Build IPA
         script: |
+          mkdir -p build/ios/ipa
           cd ios && xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -sdk iphoneos \
