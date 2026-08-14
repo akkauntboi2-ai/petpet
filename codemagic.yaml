@@ -26,14 +26,23 @@ workflows:
           keychain add-certificates
           xcode-project use-profiles \
             --project=ios/Runner.xcodeproj \
-            --export-options-plist=/Users/builder/export_options.plist
+            --target=Runner \
+            --export-options-plist=/Users/builder/export_options.plist \
+            --verbose
+          cat /Users/builder/export_options.plist
       - name: Build IPA
         script: |
-          xcode-project build-ipa \
-            --workspace ios/Runner.xcworkspace \
-            --scheme Runner \
-            --export-options-plist=/Users/builder/export_options.plist \
-            --archive-flags="-destination 'generic/platform=iOS'"
+          cd ios && xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath $HOME/Runner.xcarchive \
+            archive
+          xcodebuild -exportArchive \
+            -archivePath $HOME/Runner.xcarchive \
+            -exportPath $HOME/build \
+            -exportOptionsPlist /Users/builder/export_options.plist
+          cp $HOME/build/*.ipa ../build/ios/ipa/
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
