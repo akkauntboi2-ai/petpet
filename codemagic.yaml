@@ -22,9 +22,14 @@ workflows:
             --create \
             --verbose
           keychain add-certificates
-          xcode-project use-profiles --export-options-plist=/Users/builder/export_options.plist
+          xcode-project use-profiles \
+            --project=ios/Runner.xcodeproj \
+            --export-options-plist=/Users/builder/export_options.plist
       - name: Build IPA
-        script: flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
+        script: |
+          flutter build ipa \
+            --release \
+            --export-options-plist=/Users/builder/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
