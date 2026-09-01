@@ -19,7 +19,7 @@ workflows:
       - name: Set up code signing
         script: |
           keychain initialize
-          app-store-connect fetch-signing-files "com.petpet2025.app" \
+          app-store-connect fetch-signing-files "com.petpet.uz.app2026" \
             --type IOS_APP_STORE \
             --create
           keychain add-certificates
